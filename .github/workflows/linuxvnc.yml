@@ -48,7 +48,7 @@ jobs:
       run: |
         echo "IP:"
         tailscale ip -4
-        echo "Port : 5901"
+        echo "Port : 5999"
         echo "Password: 123456"
 
     - name: Keep Runner Alive
