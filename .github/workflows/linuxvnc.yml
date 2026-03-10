@@ -14,7 +14,6 @@ jobs:
 
     - name: Install LXDE + VNC
       run: |
-        sudo apt update
         sudo apt install -y lxde-core tigervnc-standalone-server dbus-x11 curl
 
     - name: Configure LXDE session
@@ -35,7 +34,7 @@ jobs:
 
     - name: Start VNC Server
       run: |
-        vncserver :1 -geometry 1280x720 -depth 24
+        vncserver :99 -geometry 1024x600 -depth 24 -localhost no
 
     - name: Install Tailscale
       run: |
@@ -47,9 +46,9 @@ jobs:
 
     - name: Show Connection Info
       run: |
-        echo "Tailscale IP:"
+        echo "IP:"
         tailscale ip -4
-        echo "Connect via VNC to: <IP>:5901"
+        echo "Port : 5901"
         echo "Password: 123456"
 
     - name: Keep Runner Alive
