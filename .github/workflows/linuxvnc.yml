@@ -19,10 +19,14 @@ jobs:
 
     - name: Configure LXDE session
       run: |
-        mkdir -p ~/.vnc
-        echo "#!/bin/bash
-        startlxde &" > ~/.vnc/xstartup
-        chmod +x ~/.vnc/xstartup
+       mkdir -p ~/.vnc
+       cat > ~/.vnc/xstartup << 'EOF'
+       #!/bin/bash
+       unset SESSION_MANAGER
+       unset DBUS_SESSION_BUS_ADDRESS
+       dbus-launch startlxde
+       EOF
+       chmod +x ~/.vnc/xstartup
 
     - name: Set VNC Password
       run: |
