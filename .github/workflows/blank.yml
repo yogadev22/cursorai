@@ -14,7 +14,7 @@ jobs:
     - name: Install XFCE + VNC
       run: |
         sudo apt update
-        sudo apt install -y xfce4 xfce4-goodies tightvncserver curl
+        sudo apt install -y xfce4 xfce4-goodies tightvncserver curl unzip
 
     - name: Install RustDesk
       run: |
@@ -39,9 +39,14 @@ jobs:
         mkdir -p ~/.vnc
         echo "123456" | vncpasswd -f > ~/.vnc/passwd
         chmod 600 ~/.vnc/passwd
-        vncserver :1 -geometry 1280x720
+        vncserver :1 -geometry 1280x720 -depth 24
 
     - name: Show Tailscale IP
       run: |
+        echo "Tailscale IP:"
         tailscale ip
-        sleep 999999
+
+    - name: Keep Runner Alive
+      run: |
+        echo "Runner ready for remote desktop"
+        sleep 21600
