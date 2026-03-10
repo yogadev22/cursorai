@@ -1,1 +1,53 @@
 
+name: VNC LXDE Remote
+
+on:
+  workflow_dispatch:
+
+jobs:
+  build:
+    runs-on: ubuntu-latest
+    timeout-minutes: 360
+
+    steps:
+    - uses: actions/checkout@v4
+
+    - name: Install LXDE + VNC
+      run: |
+        sudo apt update
+        sudo apt install -y lxde-core tigervnc-standalone-server dbus-x11 curl
+
+    - name: Configure LXDE session
+      run: |
+        mkdir -p ~/.vnc
+        echo "#!/bin/bash
+        startlxde &" > ~/.vnc/xstartup
+        chmod +x ~/.vnc/xstartup
+
+    - name: Set VNC Password
+      run: |
+        echo "123456" | vncpasswd -f > ~/.vnc/passwd
+        chmod 600 ~/.vnc/passwd
+
+    - name: Start VNC Server
+      run: |
+        vncserver :1 -geometry 1280x720 -depth 24
+
+    - name: Install Tailscale
+      run: |
+        curl -fsSL https://tailscale.com/install.sh | sh
+
+    - name: Connect Tailscale
+      run: |
+        sudo tailscale up --authkey=${{ secrets.TS_KEY }}
+
+    - name: Show Connection Info
+      run: |
+        echo "Tailscale IP:"
+        tailscale ip -4
+        echo "Connect via VNC to: <IP>:5901"
+        echo "Password: 123456"
+
+    - name: Keep Runner Alive
+      run: |
+        sleep 21600
