@@ -11,15 +11,15 @@ jobs:
     steps:
     - uses: actions/checkout@v4
 
-    - name: Install XFCE + XRDP
+    - name: Install LXDE + XRDP
       run: |
         sudo apt update
-        sudo apt install -y xfce4 xfce4-goodies xrdp curl unzip
+        sudo apt install -y lxde lxde-core lxde-common xrdp curl unzip
 
     - name: Configure Desktop
       run: |
-        echo xfce4-session > ~/.xsession
-
+        echo "startlxde" > ~/.xsession
+        
     - name: Set runner password
       run: |
         echo "runner:runner" | sudo chpasswd
