@@ -11,17 +11,30 @@ jobs:
     steps:
     - uses: actions/checkout@v4
 
-    - name: Install XFCE + VNC
+    - name: Install XFCE + XRDP
       run: |
         sudo apt update
-        sudo apt install -y xfce4 xfce4-goodies tightvncserver curl unzip
+        sudo apt install -y xfce4 xfce4-goodies xrdp curl unzip
+
+    - name: Configure Desktop
+      run: |
+        echo xfce4-session > ~/.xsession
+
+    - name: Set runner password
+      run: |
+        echo "runner:runner" | sudo chpasswd
+
+    - name: Start XRDP
+      run: |
+        sudo systemctl enable xrdp
+        sudo systemctl restart xrdp
 
     - name: Install RustDesk
       run: |
         wget https://github.com/rustdesk/rustdesk/releases/download/1.4.6/rustdesk-1.4.6-x86_64.deb
         sudo apt install -y ./rustdesk-1.4.6-x86_64.deb
 
-    - name: Install RustDesk Server
+    - name: Start RustDesk Server
       run: |
         wget https://github.com/rustdesk/rustdesk-server/releases/latest/download/rustdesk-server-linux-amd64.zip
         unzip rustdesk-server-linux-amd64.zip
@@ -34,17 +47,13 @@ jobs:
       with:
         authkey: ${{ secrets.TAILSCALE_AUTHKEY }}
 
-    - name: Start VNC
-      run: |
-        mkdir -p ~/.vnc
-        echo "123456" | vncpasswd -f > ~/.vnc/passwd
-        chmod 600 ~/.vnc/passwd
-        vncserver :1 -geometry 1280x720 -depth 24
-
-    - name: Show Tailscale IP
+    - name: Show Connection Info
       run: |
         echo "Tailscale IP:"
         tailscale ip
+        echo "RDP login:"
+        echo "username: runner"
+        echo "password: runner"
 
     - name: Keep Runner Alive
       run: |
