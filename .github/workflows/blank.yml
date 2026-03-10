@@ -1,4 +1,4 @@
-name: XFCE Remote
+name: CRD Remote
 
 on:
   workflow_dispatch:
@@ -11,51 +11,25 @@ jobs:
     steps:
     - uses: actions/checkout@v4
 
-    - name: Install LXDE + XRDP
+    - name: Install LXDE
       run: |
         sudo apt update
-        sudo apt install -y lxde lxde-core lxde-common xrdp curl unzip
+        sudo apt install -y lxde lxde-core lxde-common wget
 
     - name: Configure Desktop
       run: |
         echo "startlxde" > ~/.xsession
-        
-    - name: Set runner password
-      run: |
-        echo "runner:runner" | sudo chpasswd
 
-    - name: Start XRDP
+    - name: Install Chrome Remote Desktop
       run: |
-        sudo systemctl enable xrdp
-        sudo systemctl restart xrdp
+        wget https://dl.google.com/linux/direct/chrome-remote-desktop_current_amd64.deb
+        sudo dpkg -i chrome-remote-desktop_current_amd64.deb || sudo apt-get install -f -y
 
-    - name: Install RustDesk
+    - name: Start CRD
       run: |
-        wget https://github.com/rustdesk/rustdesk/releases/download/1.4.6/rustdesk-1.4.6-x86_64.deb
-        sudo apt install -y ./rustdesk-1.4.6-x86_64.deb
-
-    - name: Start RustDesk Server
-      run: |
-        wget https://github.com/rustdesk/rustdesk-server/releases/latest/download/rustdesk-server-linux-amd64.zip
-        unzip rustdesk-server-linux-amd64.zip
-        cd amd64
-        ./hbbs &
-        ./hbbr &
-
-    - name: Setup Tailscale
-      uses: tailscale/github-action@v2
-      with:
-        authkey: ${{ secrets.TAILSCALE_AUTHKEY }}
-
-    - name: Show Connection Info
-      run: |
-        echo "Tailscale IP:"
-        tailscale ip
-        echo "RDP login:"
-        echo "username: runner"
-        echo "password: runner"
+        ${{ secrets.CRD_COMMAND }}
 
     - name: Keep Runner Alive
       run: |
-        echo "Runner ready for remote desktop"
+        echo "CRD started"
         sleep 21600
