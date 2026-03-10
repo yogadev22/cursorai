@@ -18,8 +18,8 @@ jobs:
 
     - name: Install RustDesk
       run: |
-        wget https://github.com/rustdesk/rustdesk/releases/latest/download/rustdesk-1.2.3-x86_64.deb
-        sudo apt install -y ./rustdesk-1.2.3-x86_64.deb
+        wget https://github.com/rustdesk/rustdesk/releases/download/1.4.6/rustdesk-1.4.6-x86_64.deb
+        sudo apt install -y ./rustdesk-1.4.6-x86_64.deb
 
     - name: Install RustDesk Server
       run: |
