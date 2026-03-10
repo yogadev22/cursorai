@@ -14,6 +14,7 @@ jobs:
 
     - name: Install LXDE + VNC
       run: |
+        sudo apt update
         sudo apt install -y lxde-core tigervnc-standalone-server dbus-x11 curl
 
     - name: Configure LXDE session
