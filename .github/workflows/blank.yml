@@ -1,0 +1,47 @@
+name: XFCE Remote
+
+on:
+  workflow_dispatch:
+
+jobs:
+  build:
+    runs-on: ubuntu-latest
+    timeout-minutes: 360
+
+    steps:
+    - uses: actions/checkout@v4
+
+    - name: Install XFCE + VNC
+      run: |
+        sudo apt update
+        sudo apt install -y xfce4 xfce4-goodies tightvncserver curl
+
+    - name: Install RustDesk
+      run: |
+        wget https://github.com/rustdesk/rustdesk/releases/latest/download/rustdesk-1.2.3-x86_64.deb
+        sudo apt install -y ./rustdesk-1.2.3-x86_64.deb
+
+    - name: Install RustDesk Server
+      run: |
+        wget https://github.com/rustdesk/rustdesk-server/releases/latest/download/rustdesk-server-linux-amd64.zip
+        unzip rustdesk-server-linux-amd64.zip
+        cd rustdesk-server
+        ./hbbs &
+        ./hbbr &
+
+    - name: Setup Tailscale
+      uses: tailscale/github-action@v2
+      with:
+        authkey: ${{ secrets.TAILSCALE_AUTHKEY }}
+
+    - name: Start VNC
+      run: |
+        mkdir -p ~/.vnc
+        echo "123456" | vncpasswd -f > ~/.vnc/passwd
+        chmod 600 ~/.vnc/passwd
+        vncserver :1 -geometry 1280x720
+
+    - name: Show Tailscale IP
+      run: |
+        tailscale ip
+        sleep 999999
