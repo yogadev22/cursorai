@@ -11,14 +11,14 @@ jobs:
     steps:
     - uses: actions/checkout@v4
 
-    - name: Install LXDE
+    - name: Install XFCE
       run: |
         sudo apt update
-        sudo apt install -y lxde lxde-core lxde-common wget
+        sudo apt install -y xfce4 xfce4-goodies wget
 
     - name: Configure Desktop
       run: |
-        echo "startlxde" > ~/.xsession
+        echo xfce4-session > ~/.xsession
 
     - name: Install Chrome Remote Desktop
       run: |
@@ -27,9 +27,9 @@ jobs:
 
     - name: Start CRD
       run: |
-        ${{ secrets.CRD_COMMAND }}
+        DISPLAY= /opt/google/chrome-remote-desktop/start-host --code="${{ secrets.CRD_CODE }}" --redirect-url="https://remotedesktop.google.com/_/oauthredirect" --name=runner-github --pin=123456
 
-    - name: Keep Runner Alive
+    - name: Keep Alive
       run: |
         echo "CRD started"
         sleep 21600
