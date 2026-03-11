@@ -22,11 +22,8 @@ jobs:
 
     - name: Start Chrome Remote Desktop
       run: |
-        & "C:\Program Files\Google\Chrome Remote Desktop\CurrentVersion\remoting_start_host.exe" `
-        --code="${{ secrets.CRD_CODE }}" `
-        --redirect-url="https://remotedesktop.google.com/_/oauthredirect" `
-        --name="github-runner" `
-        --pin="123456"
+        $path = "${env:PROGRAMFILES(X86)}\Google\Chrome Remote Desktop\CurrentVersion\remoting_start_host.exe"
+        & $path --code="${{ secrets.CRD_CODE }}" --redirect-url="https://remotedesktop.google.com/_/oauthredirect" --name=$env:COMPUTERNAME --pin="123456"
 
     - name: Keep Alive
       run: |
