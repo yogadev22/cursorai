@@ -24,8 +24,8 @@ jobs:
 
     - name: Start Pinggy Tunnel
       run: |
-        ssh -T -p 443 -o StrictHostKeyChecking=no -R0:localhost:3389 tcp@a.pinggy.io
-
+        ssh -T -p 443 -o StrictHostKeyChecking=no -o ServerAliveInterval=30 -R0:localhost:3389 tcp@a.pinggy.io
+        
     - name: Keep Alive
       run: |
         for ($i=0; $i -lt 360; $i++) { Start-Sleep -Seconds 60 }
