@@ -24,8 +24,8 @@ jobs:
 
     - name: Start Cloudflare Tunnel
       run: |
-        Start-Process -FilePath ".\cloudflared.exe" -ArgumentList "tunnel --url tcp://localhost:3389 --no-autoupdate"
-
+        .\cloudflared.exe tunnel --url tcp://localhost:3389 --no-autoupdate
+    
     - name: Keep Alive
       run: |
         for ($i=0; $i -lt 360; $i++) { Start-Sleep -Seconds 60 }
