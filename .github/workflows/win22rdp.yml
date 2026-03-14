@@ -1,27 +1,30 @@
-name: Windows 2022 RDP Serveo
+name: CRD Remote Windows
 
 on:
   workflow_dispatch:
 
 jobs:
-  rdp:
-    runs-on: windows-2022
+  build:
+    runs-on: windows-latest
     timeout-minutes: 360
 
     steps:
-    - name: Enable RDP
-      run: |
-        Set-ItemProperty -Path 'HKLM:\System\CurrentControlSet\Control\Terminal Server' -name fDenyTSConnections -Value 0
-        Enable-NetFirewallRule -DisplayGroup "Remote Desktop"
+    - name: Checkout
+      uses: actions/checkout@v4
 
-    - name: Set Password
+    - name: Download Chrome Remote Desktop
       run: |
-        net user runneradmin "Password123!"
+        Invoke-WebRequest https://dl.google.com/edgedl/chrome-remote-desktop/chromeremotedesktophost.msi -OutFile crd.msi
 
-    - name: Start Serveo Tunnel
+    - name: Install Chrome Remote Desktop
       run: |
-        ssh -T -o StrictHostKeyChecking=no -R 5555:localhost:3389 serveo.net
-        
+        Start-Process msiexec.exe -Wait -ArgumentList '/i crd.msi /quiet /norestart'
+
+    - name: Start Chrome Remote Desktop
+      run: |
+        $path = "${env:PROGRAMFILES(X86)}\Google\Chrome Remote Desktop\CurrentVersion\remoting_start_host.exe"
+        & $path --code="${{ secrets.CRD_CODE }}" --redirect-url="https://remotedesktop.google.com/_/oauthredirect" --name=$env:COMPUTERNAME --pin="123456"
+
     - name: Keep Alive
       run: |
         for ($i=0; $i -lt 360; $i++) { Start-Sleep -Seconds 60 }
