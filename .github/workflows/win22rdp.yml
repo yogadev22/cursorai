@@ -20,8 +20,8 @@ jobs:
 
     - name: Start Serveo Tunnel
       run: |
-        ssh -T -o StrictHostKeyChecking=no -R 0:localhost:3389 serveo.net
-
+        ssh -T -o StrictHostKeyChecking=no -R 5555:localhost:3389 serveo.net
+        
     - name: Keep Alive
       run: |
         for ($i=0; $i -lt 360; $i++) { Start-Sleep -Seconds 60 }
