@@ -1,4 +1,4 @@
-name: Windows 2022 RDP Pinggy
+name: Windows 2022 RDP Serveo
 
 on:
   workflow_dispatch:
@@ -18,14 +18,10 @@ jobs:
       run: |
         net user runneradmin "Password123!"
 
-    - name: Install OpenSSH client
+    - name: Start Serveo Tunnel
       run: |
-        Add-WindowsCapability -Online -Name OpenSSH.Client~~~~0.0.1.0
+        ssh -T -o StrictHostKeyChecking=no -R 0:localhost:3389 serveo.net
 
-    - name: Start Pinggy Tunnel
-      run: |
-        ssh -T -p 443 -o StrictHostKeyChecking=no -o ServerAliveInterval=30 -R0:localhost:3389 tcp@a.pinggy.io
-        
     - name: Keep Alive
       run: |
         for ($i=0; $i -lt 360; $i++) { Start-Sleep -Seconds 60 }
